@@ -1,0 +1,6 @@
+{
+    "hostname": "localhost",
+    "database": "greenWorld",
+    "username": "postgres",
+    "password": "P@ssw0rd"
+}
