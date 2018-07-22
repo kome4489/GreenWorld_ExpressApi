@@ -3,79 +3,63 @@ const models = require('../models');
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    models.User.findAll().then(result => {
-        if (result && result.length > 0) {
-            res.json(result);
-        } else {
-            res.status(204);
-            res.send();
-        }
-    }).catch(err => {
-        res.status(409);
-        res.json(err);
-    });
-});
-
-router.get('/:id', (req, res) => {
-    models.User.findOne({
-        where: {
-            id: req.params.id
-        }
-    }).then(result => {
-        if (result) {
-            res.json(result);
-        } else {
-            res.status(204);
-            res.send();
-        }
-    }).catch(err => {
-        res.status(409);
-        res.json(err);
-    });
-});
-
-router.post('/', (req, res) => {
-    models.User.create({
-        username: req.body.username,
-        email: req.body.email
-    }).then(result => {
-        res.status(201);
+router.post('/search', (req, res) => {
+    let constant = {};
+    if (req.body.userId !== undefined && req.body.userId !== '') {
+        constant = {
+            where: {
+                userId: req.body.userId
+            }
+        };
+    }
+    models.User.findAll(constant).then(result => {
+        res.status(200);
         res.send(result);
     }).catch(err => {
-        res.status(409);
+        res.status(400);
         res.send(err);
     });
 });
 
-router.put('/:id', (req, res) => {
-    models.User.update({
+router.post('/create', (req, res) => {
+    models.User.create({
         username: req.body.username,
         email: req.body.email
-    }, {
-        where: {
-            id: req.params.id
-        }
     }).then(result => {
-        res.status(204);
-        res.json(result);
+        res.status(200);
+        res.send('success');
     }).catch(err => {
-        res.status(409);
-        res.json(err);
+        res.status(400);
+        res.send(err);
     });
 });
 
-router.delete('/:id', (req, res) => {
-    models.User.destroy({
-        where: {
-            id: req.params.id
-        }
-    }).then(result=> {
-        res.status(204);
-        res.json(result);
+router.post('/update', (req, res) => {
+    models.User.update({
+        username: req.body.username,
+        email: req.body.email
+    },
+    {where: {
+        userId: req.body.userId
+    }}).then(result => {
+        res.status(200);
+        res.send('success');
     }).catch(err => {
-        res.status(409);
-        res.json(err);
+        res.status(400);
+        res.send(err);
+    });
+});
+
+router.post('/delete', (req, res) => {
+    models.User.update({
+        where: {
+            userId: req.body.userId
+    }}).then(result => {
+        res.status(200);
+        res.send('success');
+    }).catch(err => {
+        res.status(400);
+        res.send(err);
     });
 });
 
